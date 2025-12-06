@@ -23,6 +23,10 @@ down:
 logs:
 	- docker-compose -f deployments/docker-compose.yaml logs
 
+.PHONY: ps
+ps:
+	- docker-compose -f deployments/docker-compose.yaml ps
+
 .PHONY: prune
 prune: down
 	- docker image prune -f
