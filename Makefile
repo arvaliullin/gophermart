@@ -13,19 +13,19 @@ fmt:
 
 .PHONY: up
 up:
-	- docker-compose -f deployments/docker-compose.yaml up --build -d
+	- docker compose -f deployments/docker-compose.yaml up --build -d
 
 .PHONY: down
 down:
-	- docker-compose -f deployments/docker-compose.yaml down -v
+	- docker compose -f deployments/docker-compose.yaml down -v
 
 .PHONY: logs
 logs:
-	- docker-compose -f deployments/docker-compose.yaml logs
+	- docker compose -f deployments/docker-compose.yaml logs
 
 .PHONY: ps
 ps:
-	- docker-compose -f deployments/docker-compose.yaml ps
+	- docker compose -f deployments/docker-compose.yaml ps
 
 .PHONY: prune
 prune: down
