@@ -23,7 +23,8 @@
                 "golang.go",
                 "ms-azuretools.vscode-docker",
                 "DavidAnson.vscode-markdownlint",
-                "cweijan.vscode-database-client2"
+                "cweijan.vscode-database-client2",
+                "ms-vscode.makefile-tools"
             ]
         }
     },
