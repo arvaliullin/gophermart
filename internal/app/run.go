@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"net/http"
+	"time"
 )
 
 // Run запускает приложение и ожидает сигнала завершения.
@@ -25,7 +26,10 @@ func (a *App) Run(ctx context.Context) error {
 
 	a.logger.Info().Msg(msgShuttingDown)
 
-	if err := a.server.Shutdown(context.Background()); err != nil {
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	if err := a.server.Shutdown(shutdownCtx); err != nil {
 		a.logger.Error().
 			Err(err).
 			Msg(msgServerStopError)
