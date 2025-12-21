@@ -10,10 +10,8 @@ import (
 
 type contextKey string
 
-const (
-	userIDKey      contextKey = "user_id"
-	authCookieName            = "auth_token"
-)
+const userIDKey contextKey = "user_id"
+const authCookieName = "auth_token"
 
 // UserIDKey экспортируемый ключ для тестирования.
 var UserIDKey = userIDKey
@@ -65,4 +63,3 @@ func extractToken(r *http.Request) string {
 
 	return ""
 }
-
