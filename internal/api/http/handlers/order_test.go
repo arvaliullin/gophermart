@@ -12,6 +12,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/api/http/middleware"
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/core/ports/mocks"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -123,7 +124,7 @@ func TestOrderHandler_List(t *testing.T) {
 			name:   "success with orders",
 			userID: 1,
 			setup: func(orderService *mocks.MockOrderService) {
-				accrual := 500.0
+				accrual := decimal.NewFromFloat(500.0)
 				orderService.EXPECT().
 					GetUserOrders(gomock.Any(), int64(1)).
 					Return([]*domain.Order{

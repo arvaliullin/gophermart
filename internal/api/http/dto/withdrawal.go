@@ -15,9 +15,10 @@ type WithdrawalResponse struct {
 
 // FromDomainWithdrawal преобразует доменное списание в DTO.
 func FromDomainWithdrawal(w *domain.Withdrawal) *WithdrawalResponse {
+	sum, _ := w.Sum.Float64()
 	return &WithdrawalResponse{
 		Order:       w.OrderNumber,
-		Sum:         w.Sum,
+		Sum:         sum,
 		ProcessedAt: w.ProcessedAt.Format(time.RFC3339),
 	}
 }

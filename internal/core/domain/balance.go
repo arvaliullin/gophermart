@@ -1,8 +1,10 @@
 package domain
 
+import "github.com/shopspring/decimal"
+
 // Balance представляет баланс пользователя в системе лояльности.
 type Balance struct {
 	UserID    int64
-	Current   float64
-	Withdrawn float64
+	Current   decimal.Decimal
+	Withdrawn decimal.Decimal
 }

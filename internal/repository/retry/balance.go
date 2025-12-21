@@ -7,6 +7,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/core/ports"
 	"github.com/arvaliullin/gophermart/internal/pkg/retry"
+	"github.com/shopspring/decimal"
 )
 
 // ErrBalanceRepoNil возвращается при попытке создать адаптер с nil репозиторием.
@@ -49,14 +50,14 @@ func (a *BalanceRepositoryAdapter) CreateForUser(ctx context.Context, userID int
 }
 
 // AddAccrual добавляет начисление к балансу пользователя.
-func (a *BalanceRepositoryAdapter) AddAccrual(ctx context.Context, userID int64, amount float64) error {
+func (a *BalanceRepositoryAdapter) AddAccrual(ctx context.Context, userID int64, amount decimal.Decimal) error {
 	return a.strategy.DoWithRetry(ctx, func(ctx context.Context) error {
 		return a.repo.AddAccrual(ctx, userID, amount)
 	})
 }
 
 // Withdraw выполняет списание средств с баланса пользователя.
-func (a *BalanceRepositoryAdapter) Withdraw(ctx context.Context, userID int64, orderNumber string, amount float64) error {
+func (a *BalanceRepositoryAdapter) Withdraw(ctx context.Context, userID int64, orderNumber string, amount decimal.Decimal) error {
 	return a.strategy.DoWithRetry(ctx, func(ctx context.Context) error {
 		return a.repo.Withdraw(ctx, userID, orderNumber, amount)
 	})

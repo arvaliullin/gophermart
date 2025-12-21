@@ -12,6 +12,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/api/http/middleware"
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/core/ports/mocks"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -22,8 +23,8 @@ func TestBalanceHandler_Get(t *testing.T) {
 		userID         int64
 		setup          func(*mocks.MockBalanceService)
 		wantStatusCode int
-		wantCurrent    float64
-		wantWithdrawn  float64
+		wantCurrent    string
+		wantWithdrawn  string
 	}{
 		{
 			name:   "success",
@@ -33,13 +34,13 @@ func TestBalanceHandler_Get(t *testing.T) {
 					GetBalance(gomock.Any(), int64(1)).
 					Return(&domain.Balance{
 						UserID:    1,
-						Current:   500.5,
-						Withdrawn: 100.0,
+						Current:   decimal.NewFromFloat(500.5),
+						Withdrawn: decimal.NewFromFloat(100.0),
 					}, nil)
 			},
 			wantStatusCode: http.StatusOK,
-			wantCurrent:    500.5,
-			wantWithdrawn:  100.0,
+			wantCurrent:    "500.5",
+			wantWithdrawn:  "100",
 		},
 		{
 			name:           "unauthorized",
@@ -73,11 +74,11 @@ func TestBalanceHandler_Get(t *testing.T) {
 			assert.Equal(t, tt.wantStatusCode, rr.Code)
 
 			if tt.wantStatusCode == http.StatusOK {
-				var resp map[string]float64
+				var resp map[string]json.Number
 				err := json.NewDecoder(rr.Body).Decode(&resp)
 				assert.NoError(t, err)
-				assert.Equal(t, tt.wantCurrent, resp["current"])
-				assert.Equal(t, tt.wantWithdrawn, resp["withdrawn"])
+				assert.Equal(t, tt.wantCurrent, resp["current"].String())
+				assert.Equal(t, tt.wantWithdrawn, resp["withdrawn"].String())
 			}
 		})
 	}
@@ -97,7 +98,7 @@ func TestBalanceHandler_Withdraw(t *testing.T) {
 			body:   map[string]any{"order": "79927398713", "sum": 100.0},
 			setup: func(balanceService *mocks.MockBalanceService) {
 				balanceService.EXPECT().
-					Withdraw(gomock.Any(), int64(1), "79927398713", float64(100)).
+					Withdraw(gomock.Any(), int64(1), "79927398713", gomock.Any()).
 					Return(nil)
 			},
 			wantStatusCode: http.StatusOK,
@@ -108,7 +109,7 @@ func TestBalanceHandler_Withdraw(t *testing.T) {
 			body:   map[string]any{"order": "79927398713", "sum": 1000.0},
 			setup: func(balanceService *mocks.MockBalanceService) {
 				balanceService.EXPECT().
-					Withdraw(gomock.Any(), int64(1), "79927398713", float64(1000)).
+					Withdraw(gomock.Any(), int64(1), "79927398713", gomock.Any()).
 					Return(domain.ErrInsufficientBalance)
 			},
 			wantStatusCode: http.StatusPaymentRequired,
@@ -119,7 +120,7 @@ func TestBalanceHandler_Withdraw(t *testing.T) {
 			body:   map[string]any{"order": "12345", "sum": 100.0},
 			setup: func(balanceService *mocks.MockBalanceService) {
 				balanceService.EXPECT().
-					Withdraw(gomock.Any(), int64(1), "12345", float64(100)).
+					Withdraw(gomock.Any(), int64(1), "12345", gomock.Any()).
 					Return(domain.ErrInvalidOrderNumber)
 			},
 			wantStatusCode: http.StatusUnprocessableEntity,

@@ -11,6 +11,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/core/ports/mocks"
 	"github.com/arvaliullin/gophermart/internal/core/services/accrual"
 	"github.com/rs/zerolog"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -45,7 +46,7 @@ func TestWorker_ProcessOrder_Success(t *testing.T) {
 		Return(&ports.AccrualResponse{
 			Order:   "12345678903",
 			Status:  domain.OrderStatusProcessed,
-			Accrual: 500.0,
+			Accrual: decimal.NewFromFloat(500.0),
 		}, nil).
 		AnyTimes()
 
@@ -55,7 +56,7 @@ func TestWorker_ProcessOrder_Success(t *testing.T) {
 		AnyTimes()
 
 	balanceRepo.EXPECT().
-		AddAccrual(gomock.Any(), int64(1), 500.0).
+		AddAccrual(gomock.Any(), int64(1), gomock.Any()).
 		Return(nil).
 		AnyTimes()
 

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/arvaliullin/gophermart/internal/core/domain"
+	"github.com/shopspring/decimal"
 )
 
 //go:generate mockgen -source=accrual.go -destination=mocks/accrual_mock.go -package=mocks
@@ -12,7 +13,7 @@ import (
 type AccrualResponse struct {
 	Order   string
 	Status  domain.OrderStatus
-	Accrual float64
+	Accrual decimal.Decimal
 }
 
 // AccrualClient определяет контракт для взаимодействия с системой начислений.

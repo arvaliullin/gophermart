@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/shopspring/decimal"
 )
 
 // OrderRepository реализует интерфейс ports.OrderRepository для PostgreSQL.
@@ -149,7 +150,7 @@ func (r *OrderRepository) GetPendingOrders(ctx context.Context) ([]*domain.Order
 }
 
 // UpdateStatus обновляет статус и начисление заказа.
-func (r *OrderRepository) UpdateStatus(ctx context.Context, number string, status domain.OrderStatus, accrual *float64) error {
+func (r *OrderRepository) UpdateStatus(ctx context.Context, number string, status domain.OrderStatus, accrual *decimal.Decimal) error {
 	query := `
 		UPDATE orders
 		SET status = $1, accrual = $2

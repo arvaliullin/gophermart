@@ -7,6 +7,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/core/ports"
 	"github.com/arvaliullin/gophermart/internal/pkg/retry"
+	"github.com/shopspring/decimal"
 )
 
 // ErrOrderRepoNil возвращается при попытке создать адаптер с nil репозиторием.
@@ -75,7 +76,7 @@ func (a *OrderRepositoryAdapter) GetPendingOrders(ctx context.Context) ([]*domai
 }
 
 // UpdateStatus обновляет статус и начисление заказа.
-func (a *OrderRepositoryAdapter) UpdateStatus(ctx context.Context, number string, status domain.OrderStatus, accrual *float64) error {
+func (a *OrderRepositoryAdapter) UpdateStatus(ctx context.Context, number string, status domain.OrderStatus, accrual *decimal.Decimal) error {
 	return a.strategy.DoWithRetry(ctx, func(ctx context.Context) error {
 		return a.repo.UpdateStatus(ctx, number, status, accrual)
 	})

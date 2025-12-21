@@ -8,6 +8,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/core/ports"
 	"github.com/rs/zerolog"
+	"github.com/shopspring/decimal"
 )
 
 const (
@@ -114,8 +115,8 @@ func (w *Worker) processOrder(ctx context.Context, order *domain.Order) {
 		return
 	}
 
-	var accrual *float64
-	if resp.Accrual > 0 {
+	var accrual *decimal.Decimal
+	if resp.Accrual.IsPositive() {
 		accrual = &resp.Accrual
 	}
 
@@ -128,20 +129,20 @@ func (w *Worker) processOrder(ctx context.Context, order *domain.Order) {
 		return
 	}
 
-	if resp.Status == domain.OrderStatusProcessed && resp.Accrual > 0 {
+	if resp.Status == domain.OrderStatusProcessed && resp.Accrual.IsPositive() {
 		err = w.balanceRepo.AddAccrual(ctx, order.UserID, resp.Accrual)
 		if err != nil {
 			w.logger.Error().
 				Err(err).
 				Str("order", order.Number).
-				Float64("accrual", resp.Accrual).
+				Str("accrual", resp.Accrual.String()).
 				Msg(msgAccrualError)
 			return
 		}
 
 		w.logger.Info().
 			Str("order", order.Number).
-			Float64("accrual", resp.Accrual).
+			Str("accrual", resp.Accrual.String()).
 			Msg(msgAccrualSuccess)
 	}
 }

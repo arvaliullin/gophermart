@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/arvaliullin/gophermart/internal/core/domain"
+import (
+	"github.com/arvaliullin/gophermart/internal/core/domain"
+	"github.com/shopspring/decimal"
+)
 
 // BalanceResponse представляет ответ с информацией о балансе.
 type BalanceResponse struct {
@@ -19,10 +22,17 @@ func (r *WithdrawRequest) IsValid() bool {
 	return r.Order != "" && r.Sum > 0
 }
 
+// GetSumAsDecimal возвращает сумму как decimal.Decimal.
+func (r *WithdrawRequest) GetSumAsDecimal() decimal.Decimal {
+	return decimal.NewFromFloat(r.Sum)
+}
+
 // FromDomainBalance преобразует доменный баланс в DTO.
 func FromDomainBalance(balance *domain.Balance) *BalanceResponse {
+	current, _ := balance.Current.Float64()
+	withdrawn, _ := balance.Withdrawn.Float64()
 	return &BalanceResponse{
-		Current:   balance.Current,
-		Withdrawn: balance.Withdrawn,
+		Current:   current,
+		Withdrawn: withdrawn,
 	}
 }

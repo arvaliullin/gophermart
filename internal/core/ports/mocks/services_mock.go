@@ -14,6 +14,7 @@ import (
 	reflect "reflect"
 
 	domain "github.com/arvaliullin/gophermart/internal/core/domain"
+	decimal "github.com/shopspring/decimal"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -180,7 +181,7 @@ func (mr *MockBalanceServiceMockRecorder) GetWithdrawals(ctx, userID any) *gomoc
 }
 
 // Withdraw mocks base method.
-func (m *MockBalanceService) Withdraw(ctx context.Context, userID int64, orderNumber string, amount float64) error {
+func (m *MockBalanceService) Withdraw(ctx context.Context, userID int64, orderNumber string, amount decimal.Decimal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Withdraw", ctx, userID, orderNumber, amount)
 	ret0, _ := ret[0].(error)

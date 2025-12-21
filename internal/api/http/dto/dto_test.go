@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/arvaliullin/gophermart/internal/core/domain"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -78,11 +79,17 @@ func TestWithdrawRequest_IsValid(t *testing.T) {
 	}
 }
 
+func TestWithdrawRequest_GetSumAsDecimal(t *testing.T) {
+	req := WithdrawRequest{Order: "123", Sum: 100.5}
+	dec := req.GetSumAsDecimal()
+	assert.True(t, decimal.NewFromFloat(100.5).Equal(dec))
+}
+
 func TestFromDomainBalance(t *testing.T) {
 	balance := &domain.Balance{
 		UserID:    1,
-		Current:   500.50,
-		Withdrawn: 100.25,
+		Current:   decimal.NewFromFloat(500.50),
+		Withdrawn: decimal.NewFromFloat(100.25),
 	}
 
 	response := FromDomainBalance(balance)
@@ -93,7 +100,7 @@ func TestFromDomainBalance(t *testing.T) {
 
 func TestFromDomainOrder(t *testing.T) {
 	uploadedAt := time.Date(2024, 1, 15, 10, 30, 0, 0, time.UTC)
-	accrual := 250.0
+	accrual := decimal.NewFromFloat(250.0)
 	order := &domain.Order{
 		ID:         1,
 		UserID:     1,
@@ -107,7 +114,8 @@ func TestFromDomainOrder(t *testing.T) {
 
 	assert.Equal(t, "12345678903", response.Number)
 	assert.Equal(t, "PROCESSED", response.Status)
-	assert.Equal(t, &accrual, response.Accrual)
+	assert.NotNil(t, response.Accrual)
+	assert.Equal(t, 250.0, *response.Accrual)
 	assert.Equal(t, "2024-01-15T10:30:00Z", response.UploadedAt)
 }
 
@@ -156,7 +164,7 @@ func TestFromDomainWithdrawal(t *testing.T) {
 		ID:          1,
 		UserID:      1,
 		OrderNumber: "2377225624",
-		Sum:         500.0,
+		Sum:         decimal.NewFromFloat(500.0),
 		ProcessedAt: processedAt,
 	}
 
@@ -170,8 +178,8 @@ func TestFromDomainWithdrawal(t *testing.T) {
 func TestFromDomainWithdrawals(t *testing.T) {
 	processedAt := time.Date(2024, 1, 15, 12, 0, 0, 0, time.UTC)
 	withdrawals := []*domain.Withdrawal{
-		{OrderNumber: "111", Sum: 100.0, ProcessedAt: processedAt},
-		{OrderNumber: "222", Sum: 200.0, ProcessedAt: processedAt},
+		{OrderNumber: "111", Sum: decimal.NewFromFloat(100.0), ProcessedAt: processedAt},
+		{OrderNumber: "222", Sum: decimal.NewFromFloat(200.0), ProcessedAt: processedAt},
 	}
 
 	responses := FromDomainWithdrawals(withdrawals)

@@ -9,6 +9,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/core/ports/mocks"
 	"github.com/arvaliullin/gophermart/internal/pkg/retry"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
@@ -177,7 +178,7 @@ func TestOrderRepositoryAdapter_UpdateStatus(t *testing.T) {
 	repo := mocks.NewMockOrderRepository(ctrl)
 	adapter, _ := NewOrderRepositoryAdapter(repo, testStrategy())
 
-	accrual := 100.0
+	accrual := decimal.NewFromFloat(100.0)
 	repo.EXPECT().UpdateStatus(ctx, "123", domain.OrderStatusProcessed, &accrual).Return(nil)
 
 	err := adapter.UpdateStatus(ctx, "123", domain.OrderStatusProcessed, &accrual)
@@ -210,7 +211,7 @@ func TestBalanceRepositoryAdapter_GetByUserID(t *testing.T) {
 	repo := mocks.NewMockBalanceRepository(ctrl)
 	adapter, _ := NewBalanceRepositoryAdapter(repo, testStrategy())
 
-	expectedBalance := &domain.Balance{UserID: 1, Current: 100}
+	expectedBalance := &domain.Balance{UserID: 1, Current: decimal.NewFromInt(100)}
 	repo.EXPECT().GetByUserID(ctx, int64(1)).Return(expectedBalance, nil)
 
 	balance, err := adapter.GetByUserID(ctx, 1)
@@ -240,9 +241,10 @@ func TestBalanceRepositoryAdapter_AddAccrual(t *testing.T) {
 	repo := mocks.NewMockBalanceRepository(ctrl)
 	adapter, _ := NewBalanceRepositoryAdapter(repo, testStrategy())
 
-	repo.EXPECT().AddAccrual(ctx, int64(1), 50.0).Return(nil)
+	amount := decimal.NewFromFloat(50.0)
+	repo.EXPECT().AddAccrual(ctx, int64(1), amount).Return(nil)
 
-	err := adapter.AddAccrual(ctx, 1, 50.0)
+	err := adapter.AddAccrual(ctx, 1, amount)
 	require.NoError(t, err)
 }
 
@@ -254,9 +256,10 @@ func TestBalanceRepositoryAdapter_Withdraw(t *testing.T) {
 	repo := mocks.NewMockBalanceRepository(ctrl)
 	adapter, _ := NewBalanceRepositoryAdapter(repo, testStrategy())
 
-	repo.EXPECT().Withdraw(ctx, int64(1), "123", 25.0).Return(nil)
+	amount := decimal.NewFromFloat(25.0)
+	repo.EXPECT().Withdraw(ctx, int64(1), "123", amount).Return(nil)
 
-	err := adapter.Withdraw(ctx, 1, "123", 25.0)
+	err := adapter.Withdraw(ctx, 1, "123", amount)
 	require.NoError(t, err)
 }
 

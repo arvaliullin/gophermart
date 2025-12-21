@@ -8,6 +8,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/core/ports/mocks"
 	"github.com/arvaliullin/gophermart/internal/core/services/balance"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
@@ -23,8 +24,8 @@ func TestService_GetBalance_Success(t *testing.T) {
 
 	expectedBalance := &domain.Balance{
 		UserID:    1,
-		Current:   500.5,
-		Withdrawn: 100.0,
+		Current:   decimal.NewFromFloat(500.5),
+		Withdrawn: decimal.NewFromFloat(100.0),
 	}
 
 	balanceRepo.EXPECT().
@@ -34,8 +35,8 @@ func TestService_GetBalance_Success(t *testing.T) {
 	result, err := service.GetBalance(context.Background(), 1)
 
 	require.NoError(t, err)
-	assert.Equal(t, expectedBalance.Current, result.Current)
-	assert.Equal(t, expectedBalance.Withdrawn, result.Withdrawn)
+	assert.True(t, expectedBalance.Current.Equal(result.Current))
+	assert.True(t, expectedBalance.Withdrawn.Equal(result.Withdrawn))
 }
 
 func TestService_Withdraw_Success(t *testing.T) {
@@ -46,11 +47,12 @@ func TestService_Withdraw_Success(t *testing.T) {
 	withdrawalRepo := mocks.NewMockWithdrawalRepository(ctrl)
 	service := balance.NewService(balanceRepo, withdrawalRepo)
 
+	amount := decimal.NewFromInt(100)
 	balanceRepo.EXPECT().
-		Withdraw(gomock.Any(), int64(1), "79927398713", float64(100)).
+		Withdraw(gomock.Any(), int64(1), "79927398713", amount).
 		Return(nil)
 
-	err := service.Withdraw(context.Background(), 1, "79927398713", 100)
+	err := service.Withdraw(context.Background(), 1, "79927398713", amount)
 
 	require.NoError(t, err)
 }
@@ -63,7 +65,7 @@ func TestService_Withdraw_InvalidOrderNumber(t *testing.T) {
 	withdrawalRepo := mocks.NewMockWithdrawalRepository(ctrl)
 	service := balance.NewService(balanceRepo, withdrawalRepo)
 
-	err := service.Withdraw(context.Background(), 1, "invalid-number", 100)
+	err := service.Withdraw(context.Background(), 1, "invalid-number", decimal.NewFromInt(100))
 
 	assert.ErrorIs(t, err, domain.ErrInvalidOrderNumber)
 }
@@ -76,11 +78,12 @@ func TestService_Withdraw_InsufficientBalance(t *testing.T) {
 	withdrawalRepo := mocks.NewMockWithdrawalRepository(ctrl)
 	service := balance.NewService(balanceRepo, withdrawalRepo)
 
+	amount := decimal.NewFromInt(1000)
 	balanceRepo.EXPECT().
-		Withdraw(gomock.Any(), int64(1), "79927398713", float64(1000)).
+		Withdraw(gomock.Any(), int64(1), "79927398713", amount).
 		Return(domain.ErrInsufficientBalance)
 
-	err := service.Withdraw(context.Background(), 1, "79927398713", 1000)
+	err := service.Withdraw(context.Background(), 1, "79927398713", amount)
 
 	assert.ErrorIs(t, err, domain.ErrInsufficientBalance)
 }
@@ -98,14 +101,14 @@ func TestService_GetWithdrawals_Success(t *testing.T) {
 			ID:          1,
 			UserID:      1,
 			OrderNumber: "12345678903",
-			Sum:         100,
+			Sum:         decimal.NewFromInt(100),
 			ProcessedAt: time.Now(),
 		},
 		{
 			ID:          2,
 			UserID:      1,
 			OrderNumber: "79927398713",
-			Sum:         50,
+			Sum:         decimal.NewFromInt(50),
 			ProcessedAt: time.Now(),
 		},
 	}

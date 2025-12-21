@@ -7,6 +7,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/shopspring/decimal"
 )
 
 // BalanceRepository реализует интерфейс ports.BalanceRepository для PostgreSQL.
@@ -57,7 +58,7 @@ func (r *BalanceRepository) CreateForUser(ctx context.Context, userID int64) err
 }
 
 // AddAccrual добавляет начисление к балансу пользователя.
-func (r *BalanceRepository) AddAccrual(ctx context.Context, userID int64, amount float64) error {
+func (r *BalanceRepository) AddAccrual(ctx context.Context, userID int64, amount decimal.Decimal) error {
 	query := `
 		INSERT INTO balances (user_id, current, withdrawn)
 		VALUES ($1, $2, 0)
@@ -70,14 +71,14 @@ func (r *BalanceRepository) AddAccrual(ctx context.Context, userID int64, amount
 }
 
 // Withdraw выполняет списание средств с баланса пользователя.
-func (r *BalanceRepository) Withdraw(ctx context.Context, userID int64, orderNumber string, amount float64) error {
+func (r *BalanceRepository) Withdraw(ctx context.Context, userID int64, orderNumber string, amount decimal.Decimal) error {
 	tx, err := r.pool.Begin(ctx)
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback(ctx)
 
-	var currentBalance float64
+	var currentBalance decimal.Decimal
 	err = tx.QueryRow(ctx, `
 		SELECT current FROM balances WHERE user_id = $1 FOR UPDATE
 	`, userID).Scan(&currentBalance)
@@ -89,7 +90,7 @@ func (r *BalanceRepository) Withdraw(ctx context.Context, userID int64, orderNum
 		return err
 	}
 
-	if currentBalance < amount {
+	if currentBalance.LessThan(amount) {
 		return domain.ErrInsufficientBalance
 	}
 

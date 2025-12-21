@@ -11,6 +11,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/api/http/middleware"
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/core/ports/mocks"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -34,14 +35,14 @@ func TestWithdrawalHandler_List(t *testing.T) {
 							ID:          1,
 							UserID:      1,
 							OrderNumber: "12345678903",
-							Sum:         100,
+							Sum:         decimal.NewFromInt(100),
 							ProcessedAt: time.Now(),
 						},
 						{
 							ID:          2,
 							UserID:      1,
 							OrderNumber: "79927398713",
-							Sum:         50,
+							Sum:         decimal.NewFromInt(50),
 							ProcessedAt: time.Now(),
 						},
 					}, nil)

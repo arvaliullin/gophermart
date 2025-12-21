@@ -16,10 +16,15 @@ type OrderResponse struct {
 
 // FromDomainOrder преобразует доменный заказ в DTO.
 func FromDomainOrder(order *domain.Order) *OrderResponse {
+	var accrual *float64
+	if order.Accrual != nil {
+		f, _ := order.Accrual.Float64()
+		accrual = &f
+	}
 	return &OrderResponse{
 		Number:     order.Number,
 		Status:     string(order.Status),
-		Accrual:    order.Accrual,
+		Accrual:    accrual,
 		UploadedAt: order.UploadedAt.Format(time.RFC3339),
 	}
 }

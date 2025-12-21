@@ -8,6 +8,7 @@ import (
 
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/repository/postgres"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -113,7 +114,7 @@ func TestOrderRepository_GetPendingOrders(t *testing.T) {
 		_, err = orderRepo.Create(ctx, user.ID, "5555555555")
 		require.NoError(t, err)
 
-		accrual := 100.0
+		accrual := decimal.NewFromFloat(100.0)
 		err = orderRepo.UpdateStatus(ctx, "5555555555", domain.OrderStatusProcessed, &accrual)
 		require.NoError(t, err)
 
@@ -137,7 +138,7 @@ func TestOrderRepository_UpdateStatus(t *testing.T) {
 		_, err := orderRepo.Create(ctx, user.ID, "6666666666")
 		require.NoError(t, err)
 
-		accrual := 250.50
+		accrual := decimal.NewFromFloat(250.50)
 		err = orderRepo.UpdateStatus(ctx, "6666666666", domain.OrderStatusProcessed, &accrual)
 		require.NoError(t, err)
 
@@ -145,7 +146,7 @@ func TestOrderRepository_UpdateStatus(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, domain.OrderStatusProcessed, updated.Status)
 		require.NotNil(t, updated.Accrual)
-		assert.Equal(t, 250.50, *updated.Accrual)
+		assert.True(t, decimal.NewFromFloat(250.50).Equal(*updated.Accrual))
 	})
 
 	t.Run("обновление статуса на INVALID без начисления", func(t *testing.T) {
