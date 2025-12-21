@@ -28,6 +28,10 @@ func NewRouter(cfg *RouterConfig) http.Handler {
 	router.Use(middleware.GzipDecompress())
 	router.Use(middleware.GzipCompress())
 
+	router.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
 	router.Post("/api/user/register", cfg.AuthHandler.Register)
 	router.Post("/api/user/login", cfg.AuthHandler.Login)
 
