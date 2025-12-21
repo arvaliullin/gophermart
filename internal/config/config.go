@@ -12,13 +12,15 @@ var (
 	ErrAccrualSystemAddressRequired = fmt.Errorf("обязательный параметр ACCRUAL_SYSTEM_ADDRESS не задан")
 )
 
-// AppConfig представляет конфигурацию приложения
+// AppConfig представляет конфигурацию приложения.
 type AppConfig struct {
 	RunAddress           string `envconfig:"RUN_ADDRESS" default:":8080"`
 	DatabaseURI          string `envconfig:"DATABASE_URI"`
 	AccrualSystemAddress string `envconfig:"ACCRUAL_SYSTEM_ADDRESS"`
+	JWTSecret            string `envconfig:"JWT_SECRET" default:"gophermart-secret-key"`
 }
 
+// LoadConfig загружает конфигурацию из переменных окружения и флагов командной строки.
 func LoadConfig() (*AppConfig, error) {
 	var cfg AppConfig
 
