@@ -9,9 +9,8 @@ import (
 	"github.com/arvaliullin/gophermart/internal/pkg/retry"
 )
 
-var (
-	ErrUserRepoNil = fmt.Errorf("репозиторий пользователей не задан")
-)
+// ErrUserRepoNil возвращается при попытке создать адаптер с nil репозиторием.
+var ErrUserRepoNil = fmt.Errorf("репозиторий пользователей не задан")
 
 // UserRepositoryAdapter добавляет стратегию повторов для репозитория пользователей.
 type UserRepositoryAdapter struct {
@@ -63,4 +62,3 @@ func (a *UserRepositoryAdapter) GetByID(ctx context.Context, id int64) (*domain.
 	})
 	return user, err
 }
-

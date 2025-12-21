@@ -7,10 +7,11 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-var (
-	ErrDatabaseURIRequired          = fmt.Errorf("обязательный параметр DATABASE_URI не задан")
-	ErrAccrualSystemAddressRequired = fmt.Errorf("обязательный параметр ACCRUAL_SYSTEM_ADDRESS не задан")
-)
+// ErrDatabaseURIRequired возвращается когда не задан обязательный параметр DATABASE_URI.
+var ErrDatabaseURIRequired = fmt.Errorf("обязательный параметр DATABASE_URI не задан")
+
+// ErrAccrualSystemAddressRequired возвращается когда не задан обязательный параметр ACCRUAL_SYSTEM_ADDRESS.
+var ErrAccrualSystemAddressRequired = fmt.Errorf("обязательный параметр ACCRUAL_SYSTEM_ADDRESS не задан")
 
 // AppConfig представляет конфигурацию приложения.
 type AppConfig struct {

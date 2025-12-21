@@ -50,4 +50,3 @@ func (r *WithdrawalRepository) GetByUserID(ctx context.Context, userID int64) ([
 
 	return withdrawals, rows.Err()
 }
-

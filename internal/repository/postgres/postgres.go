@@ -89,4 +89,3 @@ func IsConnectionRetryable(err error) bool {
 	var connectErr *pgconn.ConnectError
 	return errors.As(err, &connectErr)
 }
-

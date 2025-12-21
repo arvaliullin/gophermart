@@ -40,4 +40,3 @@ func (s *Service) Withdraw(ctx context.Context, userID int64, orderNumber string
 func (s *Service) GetWithdrawals(ctx context.Context, userID int64) ([]*domain.Withdrawal, error) {
 	return s.withdrawalRepo.GetByUserID(ctx, userID)
 }
-

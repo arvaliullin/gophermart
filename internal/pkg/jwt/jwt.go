@@ -68,4 +68,3 @@ func (m *Manager) ParseToken(tokenString string) (int64, error) {
 
 	return claims.UserID, nil
 }
-

@@ -21,11 +21,14 @@ import (
 	"github.com/rs/zerolog"
 )
 
-var (
-	ErrLoadConfig      = fmt.Errorf("ошибка загрузки конфигурации")
-	ErrConnectDB       = fmt.Errorf("ошибка подключения к БД")
-	ErrCreateRetryRepo = fmt.Errorf("ошибка создания репозитория с retry")
-)
+// ErrLoadConfig возвращается при ошибке загрузки конфигурации.
+var ErrLoadConfig = fmt.Errorf("ошибка загрузки конфигурации")
+
+// ErrConnectDB возвращается при ошибке подключения к базе данных.
+var ErrConnectDB = fmt.Errorf("ошибка подключения к БД")
+
+// ErrCreateRetryRepo возвращается при ошибке создания репозитория с retry.
+var ErrCreateRetryRepo = fmt.Errorf("ошибка создания репозитория с retry")
 
 const (
 	msgConfigLoaded       = "конфигурация загружена"

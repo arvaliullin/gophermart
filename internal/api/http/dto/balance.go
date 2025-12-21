@@ -26,4 +26,3 @@ func FromDomainBalance(balance *domain.Balance) *BalanceResponse {
 		Withdrawn: balance.Withdrawn,
 	}
 }
-

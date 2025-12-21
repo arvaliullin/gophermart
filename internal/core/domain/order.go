@@ -26,4 +26,3 @@ type Order struct {
 func (s OrderStatus) IsFinal() bool {
 	return s == OrderStatusInvalid || s == OrderStatusProcessed
 }
-

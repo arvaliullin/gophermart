@@ -115,4 +115,3 @@ func TestDoWithRetry_ExhaustsAllAttempts(t *testing.T) {
 	assert.ErrorIs(t, err, testErr)
 	assert.Equal(t, 3, attempts)
 }
-

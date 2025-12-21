@@ -32,4 +32,3 @@ func FromDomainOrders(orders []*domain.Order) []*OrderResponse {
 	}
 	return result
 }
-
