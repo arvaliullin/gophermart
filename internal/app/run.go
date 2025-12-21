@@ -2,17 +2,37 @@ package app
 
 import (
 	"context"
+	"net/http"
 )
 
-const (
-	_message = "starting app"
-)
-
-// Run запускает приложение.
+// Run запускает приложение и ожидает сигнала завершения.
 func (a *App) Run(ctx context.Context) error {
+	go a.accrualWorker.Run(ctx)
 
-	a.logger.Info().
-		Msg(_message)
+	go func() {
+		a.logger.Info().
+			Str("address", a.server.Addr).
+			Msg(msgServerStarting)
+
+		if err := a.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			a.logger.Error().
+				Err(err).
+				Msg(msgServerError)
+		}
+	}()
+
+	<-ctx.Done()
+
+	a.logger.Info().Msg(msgShuttingDown)
+
+	if err := a.server.Shutdown(context.Background()); err != nil {
+		a.logger.Error().
+			Err(err).
+			Msg(msgServerStopError)
+	}
+
+	a.db.Close()
+	a.logger.Info().Msg(msgDBConnectionClosed)
 
 	return nil
 }
