@@ -29,14 +29,14 @@ func TestMain(m *testing.M) {
 
 	testPool, err = pgxpool.New(ctx, testContainer.DSN)
 	if err != nil {
-		_ = testContainer.Terminate(ctx)
+		testContainer.Terminate(ctx)
 		panic("не удалось создать пул соединений: " + err.Error())
 	}
 
 	code := m.Run()
 
 	testPool.Close()
-	_ = testContainer.Terminate(ctx)
+	testContainer.Terminate(ctx)
 
 	os.Exit(code)
 }
