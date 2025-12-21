@@ -87,14 +87,14 @@ func TestBalanceHandler_Withdraw(t *testing.T) {
 	tests := []struct {
 		name           string
 		userID         int64
-		body           interface{}
+		body           any
 		setup          func(*mocks.MockBalanceService)
 		wantStatusCode int
 	}{
 		{
 			name:   "success",
 			userID: 1,
-			body:   map[string]interface{}{"order": "79927398713", "sum": 100.0},
+			body:   map[string]any{"order": "79927398713", "sum": 100.0},
 			setup: func(balanceService *mocks.MockBalanceService) {
 				balanceService.EXPECT().
 					Withdraw(gomock.Any(), int64(1), "79927398713", float64(100)).
@@ -105,7 +105,7 @@ func TestBalanceHandler_Withdraw(t *testing.T) {
 		{
 			name:   "insufficient balance",
 			userID: 1,
-			body:   map[string]interface{}{"order": "79927398713", "sum": 1000.0},
+			body:   map[string]any{"order": "79927398713", "sum": 1000.0},
 			setup: func(balanceService *mocks.MockBalanceService) {
 				balanceService.EXPECT().
 					Withdraw(gomock.Any(), int64(1), "79927398713", float64(1000)).
@@ -116,7 +116,7 @@ func TestBalanceHandler_Withdraw(t *testing.T) {
 		{
 			name:   "invalid order number",
 			userID: 1,
-			body:   map[string]interface{}{"order": "12345", "sum": 100.0},
+			body:   map[string]any{"order": "12345", "sum": 100.0},
 			setup: func(balanceService *mocks.MockBalanceService) {
 				balanceService.EXPECT().
 					Withdraw(gomock.Any(), int64(1), "12345", float64(100)).
@@ -134,21 +134,21 @@ func TestBalanceHandler_Withdraw(t *testing.T) {
 		{
 			name:           "unauthorized",
 			userID:         0,
-			body:           map[string]interface{}{"order": "79927398713", "sum": 100.0},
+			body:           map[string]any{"order": "79927398713", "sum": 100.0},
 			setup:          func(balanceService *mocks.MockBalanceService) {},
 			wantStatusCode: http.StatusUnauthorized,
 		},
 		{
 			name:           "empty order",
 			userID:         1,
-			body:           map[string]interface{}{"order": "", "sum": 100.0},
+			body:           map[string]any{"order": "", "sum": 100.0},
 			setup:          func(balanceService *mocks.MockBalanceService) {},
 			wantStatusCode: http.StatusBadRequest,
 		},
 		{
 			name:           "zero sum",
 			userID:         1,
-			body:           map[string]interface{}{"order": "79927398713", "sum": 0},
+			body:           map[string]any{"order": "79927398713", "sum": 0},
 			setup:          func(balanceService *mocks.MockBalanceService) {},
 			wantStatusCode: http.StatusBadRequest,
 		},

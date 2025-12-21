@@ -20,7 +20,7 @@ func TestClient_GetOrderAccrual_Success(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]interface{}{
+		json.NewEncoder(w).Encode(map[string]any{
 			"order":   "12345678903",
 			"status":  "PROCESSED",
 			"accrual": 500.0,
@@ -43,7 +43,7 @@ func TestClient_GetOrderAccrual_Processing(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]interface{}{
+		json.NewEncoder(w).Encode(map[string]any{
 			"order":  "12345678903",
 			"status": "PROCESSING",
 		})
@@ -121,7 +121,7 @@ func TestClient_GetOrderAccrual_StatusMapping(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusOK)
-				json.NewEncoder(w).Encode(map[string]interface{}{
+				json.NewEncoder(w).Encode(map[string]any{
 					"order":  "12345678903",
 					"status": tt.accrualStatus,
 				})
