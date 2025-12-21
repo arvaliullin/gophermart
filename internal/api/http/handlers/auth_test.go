@@ -93,7 +93,9 @@ func TestAuthHandler_Register(t *testing.T) {
 
 			assert.Equal(t, tt.wantStatusCode, rr.Code)
 			if tt.wantCookie {
-				cookies := rr.Result().Cookies()
+				result := rr.Result()
+				defer result.Body.Close()
+				cookies := result.Cookies()
 				found := false
 				for _, c := range cookies {
 					if c.Name == "auth_token" {
