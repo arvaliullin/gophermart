@@ -64,4 +64,3 @@ func TestIsValid(t *testing.T) {
 		})
 	}
 }
-

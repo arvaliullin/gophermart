@@ -10,4 +10,3 @@ type AuthRequest struct {
 func (r *AuthRequest) IsValid() bool {
 	return r.Login != "" && r.Password != ""
 }
-

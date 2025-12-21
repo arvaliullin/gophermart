@@ -13,4 +13,3 @@ type RetryAfterError struct {
 func (e *RetryAfterError) Error() string {
 	return fmt.Sprintf("превышен лимит запросов, повторить через %v", e.Duration)
 }
-

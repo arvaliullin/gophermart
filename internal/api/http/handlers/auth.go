@@ -94,4 +94,3 @@ func setAuthCookie(w http.ResponseWriter, token string) {
 	})
 	w.Header().Set("Authorization", "Bearer "+token)
 }
-

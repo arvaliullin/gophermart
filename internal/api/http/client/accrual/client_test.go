@@ -106,7 +106,7 @@ func TestClient_GetOrderAccrual_ServiceUnavailable(t *testing.T) {
 
 func TestClient_GetOrderAccrual_StatusMapping(t *testing.T) {
 	tests := []struct {
-		accrualStatus string
+		accrualStatus  string
 		expectedStatus domain.OrderStatus
 	}{
 		{"REGISTERED", domain.OrderStatusNew},
@@ -137,4 +137,3 @@ func TestClient_GetOrderAccrual_StatusMapping(t *testing.T) {
 		})
 	}
 }
-

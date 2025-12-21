@@ -51,4 +51,3 @@ func (s *Service) SubmitOrder(ctx context.Context, userID int64, number string) 
 func (s *Service) GetUserOrders(ctx context.Context, userID int64) ([]*domain.Order, error) {
 	return s.orderRepo.GetByUserID(ctx, userID)
 }
-

@@ -106,4 +106,3 @@ func TestGetUserID_WithUserID(t *testing.T) {
 	userID := middleware.GetUserID(ctx)
 	assert.Equal(t, int64(789), userID)
 }
-

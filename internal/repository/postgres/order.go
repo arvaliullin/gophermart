@@ -167,4 +167,3 @@ func (r *OrderRepository) UpdateStatus(ctx context.Context, number string, statu
 
 	return nil
 }
-

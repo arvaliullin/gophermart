@@ -10,4 +10,3 @@ type Withdrawal struct {
 	Sum         float64
 	ProcessedAt time.Time
 }
-

@@ -9,9 +9,8 @@ import (
 	"github.com/arvaliullin/gophermart/internal/pkg/retry"
 )
 
-var (
-	ErrBalanceRepoNil = fmt.Errorf("репозиторий баланса не задан")
-)
+// ErrBalanceRepoNil возвращается при попытке создать адаптер с nil репозиторием.
+var ErrBalanceRepoNil = fmt.Errorf("репозиторий баланса не задан")
 
 // BalanceRepositoryAdapter добавляет стратегию повторов для репозитория баланса.
 type BalanceRepositoryAdapter struct {
@@ -62,4 +61,3 @@ func (a *BalanceRepositoryAdapter) Withdraw(ctx context.Context, userID int64, o
 		return a.repo.Withdraw(ctx, userID, orderNumber, amount)
 	})
 }
-

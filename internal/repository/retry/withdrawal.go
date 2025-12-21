@@ -9,9 +9,8 @@ import (
 	"github.com/arvaliullin/gophermart/internal/pkg/retry"
 )
 
-var (
-	ErrWithdrawalRepoNil = fmt.Errorf("репозиторий списаний не задан")
-)
+// ErrWithdrawalRepoNil возвращается при попытке создать адаптер с nil репозиторием.
+var ErrWithdrawalRepoNil = fmt.Errorf("репозиторий списаний не задан")
 
 // WithdrawalRepositoryAdapter добавляет стратегию повторов для репозитория списаний.
 type WithdrawalRepositoryAdapter struct {
@@ -41,4 +40,3 @@ func (a *WithdrawalRepositoryAdapter) GetByUserID(ctx context.Context, userID in
 	})
 	return withdrawals, err
 }
-
