@@ -40,3 +40,29 @@ prune: down
 run:
 	- go run github.com/arvaliullin/gophermart/cmd/gophermart
 
+.PHONY: test
+test:
+	go test ./... -cover
+
+.PHONY: test-v
+test-v:
+	go test ./... -v -cover
+
+.PHONY: test-short
+test-short:
+	go test ./... -short -cover
+
+.PHONY: build
+build:
+	go build -o bin/gophermart ./cmd/gophermart
+
+.PHONY: lint
+lint:
+	golangci-lint run
+
+.PHONY: migration
+migration:
+ifndef name
+	$(error Использование: make migration name=<имя_миграции>)
+endif
+	goose -dir migrations create $(name) go
