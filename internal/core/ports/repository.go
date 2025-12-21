@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/arvaliullin/gophermart/internal/core/domain"
+	"github.com/shopspring/decimal"
 )
 
 //go:generate mockgen -source=repository.go -destination=mocks/repository_mock.go -package=mocks
@@ -21,15 +22,15 @@ type OrderRepository interface {
 	GetByNumber(ctx context.Context, number string) (*domain.Order, error)
 	GetByUserID(ctx context.Context, userID int64) ([]*domain.Order, error)
 	GetPendingOrders(ctx context.Context) ([]*domain.Order, error)
-	UpdateStatus(ctx context.Context, number string, status domain.OrderStatus, accrual *float64) error
+	UpdateStatus(ctx context.Context, number string, status domain.OrderStatus, accrual *decimal.Decimal) error
 }
 
 // BalanceRepository определяет контракт для работы с балансом.
 type BalanceRepository interface {
 	GetByUserID(ctx context.Context, userID int64) (*domain.Balance, error)
 	CreateForUser(ctx context.Context, userID int64) error
-	AddAccrual(ctx context.Context, userID int64, amount float64) error
-	Withdraw(ctx context.Context, userID int64, orderNumber string, amount float64) error
+	AddAccrual(ctx context.Context, userID int64, amount decimal.Decimal) error
+	Withdraw(ctx context.Context, userID int64, orderNumber string, amount decimal.Decimal) error
 }
 
 // WithdrawalRepository определяет контракт для работы со списаниями.

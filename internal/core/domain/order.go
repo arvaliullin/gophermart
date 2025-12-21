@@ -1,6 +1,10 @@
 package domain
 
-import "time"
+import (
+	"time"
+
+	"github.com/shopspring/decimal"
+)
 
 // OrderStatus определяет статус обработки заказа.
 type OrderStatus string
@@ -18,7 +22,7 @@ type Order struct {
 	UserID     int64
 	Number     string
 	Status     OrderStatus
-	Accrual    *float64
+	Accrual    *decimal.Decimal
 	UploadedAt time.Time
 }
 

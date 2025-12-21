@@ -10,6 +10,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/api/http/client/accrual"
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	accrualservice "github.com/arvaliullin/gophermart/internal/core/services/accrual"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -36,7 +37,7 @@ func TestClient_GetOrderAccrual_Success(t *testing.T) {
 	assert.NotNil(t, resp)
 	assert.Equal(t, "12345678903", resp.Order)
 	assert.Equal(t, domain.OrderStatusProcessed, resp.Status)
-	assert.Equal(t, 500.0, resp.Accrual)
+	assert.True(t, decimal.NewFromFloat(500.0).Equal(resp.Accrual))
 }
 
 func TestClient_GetOrderAccrual_Processing(t *testing.T) {

@@ -6,6 +6,7 @@ import (
 	"context"
 
 	"github.com/arvaliullin/gophermart/internal/core/domain"
+	"github.com/shopspring/decimal"
 )
 
 // AuthService определяет контракт сервиса аутентификации.
@@ -23,6 +24,6 @@ type OrderService interface {
 // BalanceService определяет контракт сервиса баланса.
 type BalanceService interface {
 	GetBalance(ctx context.Context, userID int64) (*domain.Balance, error)
-	Withdraw(ctx context.Context, userID int64, orderNumber string, amount float64) error
+	Withdraw(ctx context.Context, userID int64, orderNumber string, amount decimal.Decimal) error
 	GetWithdrawals(ctx context.Context, userID int64) ([]*domain.Withdrawal, error)
 }

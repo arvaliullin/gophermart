@@ -6,6 +6,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/core/ports"
 	"github.com/arvaliullin/gophermart/internal/pkg/luhn"
+	"github.com/shopspring/decimal"
 )
 
 // Service реализует бизнес-логику управления балансом.
@@ -28,7 +29,7 @@ func (s *Service) GetBalance(ctx context.Context, userID int64) (*domain.Balance
 }
 
 // Withdraw выполняет списание средств с баланса пользователя.
-func (s *Service) Withdraw(ctx context.Context, userID int64, orderNumber string, amount float64) error {
+func (s *Service) Withdraw(ctx context.Context, userID int64, orderNumber string, amount decimal.Decimal) error {
 	if !luhn.IsValid(orderNumber) {
 		return domain.ErrInvalidOrderNumber
 	}

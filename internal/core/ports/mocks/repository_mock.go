@@ -14,6 +14,7 @@ import (
 	reflect "reflect"
 
 	domain "github.com/arvaliullin/gophermart/internal/core/domain"
+	decimal "github.com/shopspring/decimal"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -171,7 +172,7 @@ func (mr *MockOrderRepositoryMockRecorder) GetPendingOrders(ctx any) *gomock.Cal
 }
 
 // UpdateStatus mocks base method.
-func (m *MockOrderRepository) UpdateStatus(ctx context.Context, number string, status domain.OrderStatus, accrual *float64) error {
+func (m *MockOrderRepository) UpdateStatus(ctx context.Context, number string, status domain.OrderStatus, accrual *decimal.Decimal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateStatus", ctx, number, status, accrual)
 	ret0, _ := ret[0].(error)
@@ -209,7 +210,7 @@ func (m *MockBalanceRepository) EXPECT() *MockBalanceRepositoryMockRecorder {
 }
 
 // AddAccrual mocks base method.
-func (m *MockBalanceRepository) AddAccrual(ctx context.Context, userID int64, amount float64) error {
+func (m *MockBalanceRepository) AddAccrual(ctx context.Context, userID int64, amount decimal.Decimal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddAccrual", ctx, userID, amount)
 	ret0, _ := ret[0].(error)
@@ -252,7 +253,7 @@ func (mr *MockBalanceRepositoryMockRecorder) GetByUserID(ctx, userID any) *gomoc
 }
 
 // Withdraw mocks base method.
-func (m *MockBalanceRepository) Withdraw(ctx context.Context, userID int64, orderNumber string, amount float64) error {
+func (m *MockBalanceRepository) Withdraw(ctx context.Context, userID int64, orderNumber string, amount decimal.Decimal) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Withdraw", ctx, userID, orderNumber, amount)
 	ret0, _ := ret[0].(error)

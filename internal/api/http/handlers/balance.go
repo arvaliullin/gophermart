@@ -61,7 +61,7 @@ func (h *BalanceHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.balanceService.Withdraw(r.Context(), userID, req.Order, req.Sum)
+	err := h.balanceService.Withdraw(r.Context(), userID, req.Order, req.GetSumAsDecimal())
 	if err != nil {
 		if errors.Is(err, domain.ErrInvalidOrderNumber) {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)

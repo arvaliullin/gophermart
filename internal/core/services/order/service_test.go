@@ -8,6 +8,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/core/ports/mocks"
 	"github.com/arvaliullin/gophermart/internal/core/services/order"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
@@ -114,7 +115,7 @@ func TestService_GetUserOrders_Success(t *testing.T) {
 	orderRepo := mocks.NewMockOrderRepository(ctrl)
 	service := order.NewService(orderRepo)
 
-	accrual := 500.0
+	accrual := decimal.NewFromFloat(500.0)
 	orders := []*domain.Order{
 		{
 			ID:         1,

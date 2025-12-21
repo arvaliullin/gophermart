@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/arvaliullin/gophermart/internal/repository/postgres"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -28,12 +29,12 @@ func TestWithdrawalRepository_GetByUserID(t *testing.T) {
 	})
 
 	t.Run("список списаний после операций", func(t *testing.T) {
-		err := balanceRepo.AddAccrual(ctx, user.ID, 500.0)
+		err := balanceRepo.AddAccrual(ctx, user.ID, decimal.NewFromFloat(500.0))
 		require.NoError(t, err)
 
-		err = balanceRepo.Withdraw(ctx, user.ID, "1111111111", 100.0)
+		err = balanceRepo.Withdraw(ctx, user.ID, "1111111111", decimal.NewFromFloat(100.0))
 		require.NoError(t, err)
-		err = balanceRepo.Withdraw(ctx, user.ID, "2222222222", 50.0)
+		err = balanceRepo.Withdraw(ctx, user.ID, "2222222222", decimal.NewFromFloat(50.0))
 		require.NoError(t, err)
 
 		withdrawals, err := withdrawalRepo.GetByUserID(ctx, user.ID)
@@ -41,18 +42,18 @@ func TestWithdrawalRepository_GetByUserID(t *testing.T) {
 		assert.Len(t, withdrawals, 2)
 
 		assert.Equal(t, "2222222222", withdrawals[0].OrderNumber)
-		assert.Equal(t, 50.0, withdrawals[0].Sum)
+		assert.True(t, decimal.NewFromFloat(50.0).Equal(withdrawals[0].Sum))
 		assert.Equal(t, "1111111111", withdrawals[1].OrderNumber)
-		assert.Equal(t, 100.0, withdrawals[1].Sum)
+		assert.True(t, decimal.NewFromFloat(100.0).Equal(withdrawals[1].Sum))
 	})
 
 	t.Run("изоляция списаний между пользователями", func(t *testing.T) {
 		user2, err := userRepo.Create(ctx, "anotheruser", "password")
 		require.NoError(t, err)
 
-		err = balanceRepo.AddAccrual(ctx, user2.ID, 100.0)
+		err = balanceRepo.AddAccrual(ctx, user2.ID, decimal.NewFromFloat(100.0))
 		require.NoError(t, err)
-		err = balanceRepo.Withdraw(ctx, user2.ID, "3333333333", 25.0)
+		err = balanceRepo.Withdraw(ctx, user2.ID, "3333333333", decimal.NewFromFloat(25.0))
 		require.NoError(t, err)
 
 		user1Withdrawals, err := withdrawalRepo.GetByUserID(ctx, user.ID)

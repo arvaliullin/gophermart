@@ -12,6 +12,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/core/ports"
 	"github.com/arvaliullin/gophermart/internal/core/services/accrual"
 	"github.com/go-resty/resty/v2"
+	"github.com/shopspring/decimal"
 )
 
 var (
@@ -20,9 +21,9 @@ var (
 )
 
 type accrualResponse struct {
-	Order   string  `json:"order"`
-	Status  string  `json:"status"`
-	Accrual float64 `json:"accrual,omitempty"`
+	Order   string          `json:"order"`
+	Status  string          `json:"status"`
+	Accrual decimal.Decimal `json:"accrual,omitempty"`
 }
 
 // Client реализует HTTP клиент для взаимодействия с системой начислений.

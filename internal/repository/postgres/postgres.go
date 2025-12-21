@@ -7,7 +7,9 @@ import (
 	"fmt"
 
 	_ "github.com/arvaliullin/gophermart/migrations"
+	shopspring "github.com/jackc/pgx-shopspring-decimal"
 	"github.com/jackc/pgerrcode"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -35,7 +37,18 @@ func NewDB(ctx context.Context, dsn string) (*DB, error) {
 		return nil, fmt.Errorf("применение миграций: %w", err)
 	}
 
-	pool, err := pgxpool.New(ctx, dsn)
+	config, err := pgxpool.ParseConfig(dsn)
+	if err != nil {
+		return nil, fmt.Errorf("парсинг конфигурации: %w", err)
+	}
+
+	// Регистрируем поддержку decimal.Decimal для PostgreSQL NUMERIC/DECIMAL
+	config.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+		shopspring.Register(conn.TypeMap())
+		return nil
+	}
+
+	pool, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {
 		return nil, fmt.Errorf("создание пула соединений: %w", err)
 	}
