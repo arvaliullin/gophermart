@@ -82,18 +82,17 @@ func (c *Client) GetOrderAccrual(ctx context.Context, orderNumber string) (*port
 }
 
 func mapStatus(status string) domain.OrderStatus {
-	switch status {
-	case "REGISTERED":
-		return domain.OrderStatusNew
-	case "PROCESSING":
-		return domain.OrderStatusProcessing
-	case "INVALID":
-		return domain.OrderStatusInvalid
-	case "PROCESSED":
-		return domain.OrderStatusProcessed
-	default:
-		return domain.OrderStatusNew
+	statusMap := map[string]domain.OrderStatus{
+		"REGISTERED": domain.OrderStatusNew,
+		"PROCESSING": domain.OrderStatusProcessing,
+		"INVALID":    domain.OrderStatusInvalid,
+		"PROCESSED":  domain.OrderStatusProcessed,
 	}
+
+	if s, ok := statusMap[status]; ok {
+		return s
+	}
+	return domain.OrderStatusNew
 }
 
 func parseRetryAfter(value string) time.Duration {
