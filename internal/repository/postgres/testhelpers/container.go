@@ -45,12 +45,12 @@ func NewPostgresContainer(ctx context.Context) (*PostgresContainer, error) {
 
 	dsn, err := container.ConnectionString(ctx, "sslmode=disable")
 	if err != nil {
-		_ = container.Terminate(ctx)
+		container.Terminate(ctx)
 		return nil, fmt.Errorf("получение строки подключения: %w", err)
 	}
 
 	if err := runMigrations(ctx, dsn); err != nil {
-		_ = container.Terminate(ctx)
+		container.Terminate(ctx)
 		return nil, fmt.Errorf("применение миграций: %w", err)
 	}
 

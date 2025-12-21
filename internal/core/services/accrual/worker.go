@@ -12,7 +12,6 @@ import (
 
 const (
 	defaultPollInterval = 1 * time.Second
-	defaultRetryAfter   = 60 * time.Second
 
 	msgWorkerStopping      = "остановка воркера начислений"
 	msgGetOrdersError      = "ошибка получения заказов"
