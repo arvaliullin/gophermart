@@ -36,6 +36,7 @@ prune: down
 	- docker system prune -a --volumes -f
 
 
-.PHONY: helloworld
-helloworld:
-	- go run github.com/arvaliullin/gophermart/examples/helloworld
+.PHONY: run
+run:
+	- go run github.com/arvaliullin/gophermart/cmd/gophermart
+
