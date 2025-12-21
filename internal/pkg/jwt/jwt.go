@@ -50,7 +50,7 @@ func (m *Manager) GenerateToken(userID int64) (string, error) {
 
 // ParseToken извлекает ID пользователя из JWT токена.
 func (m *Manager) ParseToken(tokenString string) (int64, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, ErrInvalidToken
 		}

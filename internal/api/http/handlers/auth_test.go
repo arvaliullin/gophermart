@@ -17,7 +17,7 @@ import (
 func TestAuthHandler_Register(t *testing.T) {
 	tests := []struct {
 		name           string
-		body           interface{}
+		body           any
 		setup          func(*mocks.MockAuthService)
 		wantStatusCode int
 		wantCookie     bool
@@ -112,7 +112,7 @@ func TestAuthHandler_Register(t *testing.T) {
 func TestAuthHandler_Login(t *testing.T) {
 	tests := []struct {
 		name           string
-		body           interface{}
+		body           any
 		setup          func(*mocks.MockAuthService)
 		wantStatusCode int
 		wantCookie     bool
