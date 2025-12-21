@@ -60,6 +60,24 @@ build:
 lint:
 	golangci-lint run
 
+GOPHERMART_HOST ?= localhost
+GOPHERMART_PORT ?= 8080
+ACCRUAL_PORT ?= 8081
+DATABASE_URI ?= postgres://gophermart:gophermart@localhost:5432/gophermart?sslmode=disable
+
+.PHONY: autotest
+autotest: build
+	./cmd/gophermarttest/gophermarttest \
+		-test.v \
+		-gophermart-binary-path=./bin/gophermart \
+		-gophermart-host=$(GOPHERMART_HOST) \
+		-gophermart-port=$(GOPHERMART_PORT) \
+		-gophermart-database-uri="$(DATABASE_URI)" \
+		-accrual-binary-path=./cmd/accrual/accrual_linux_amd64 \
+		-accrual-host=$(GOPHERMART_HOST) \
+		-accrual-port=$(ACCRUAL_PORT) \
+		-accrual-database-uri="$(DATABASE_URI)"
+
 .PHONY: migration
 migration:
 ifndef name
