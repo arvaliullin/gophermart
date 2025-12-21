@@ -106,4 +106,3 @@ func GzipDecompress() func(http.Handler) http.Handler {
 		})
 	}
 }
-

@@ -30,4 +30,3 @@ func FromDomainWithdrawals(withdrawals []*domain.Withdrawal) []*WithdrawalRespon
 	}
 	return result
 }
-

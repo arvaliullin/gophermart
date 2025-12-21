@@ -28,4 +28,3 @@ func IsValid(number string) bool {
 
 	return sum%10 == 0
 }
-

@@ -112,4 +112,3 @@ func (r *BalanceRepository) Withdraw(ctx context.Context, userID int64, orderNum
 
 	return tx.Commit(ctx)
 }
-

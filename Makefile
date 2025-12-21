@@ -52,6 +52,14 @@ test-v:
 test-short:
 	go test ./... -short -cover
 
+.PHONY: test-integration
+test-integration:
+	go test -tags=integration ./... -cover
+
+.PHONY: test-integration-v
+test-integration-v:
+	go test -tags=integration ./... -v -cover
+
 .PHONY: build
 build:
 	go build -o bin/gophermart ./cmd/gophermart

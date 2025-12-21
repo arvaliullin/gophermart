@@ -9,9 +9,8 @@ import (
 	"github.com/arvaliullin/gophermart/internal/pkg/retry"
 )
 
-var (
-	ErrOrderRepoNil = fmt.Errorf("репозиторий заказов не задан")
-)
+// ErrOrderRepoNil возвращается при попытке создать адаптер с nil репозиторием.
+var ErrOrderRepoNil = fmt.Errorf("репозиторий заказов не задан")
 
 // OrderRepositoryAdapter добавляет стратегию повторов для репозитория заказов.
 type OrderRepositoryAdapter struct {
@@ -81,4 +80,3 @@ func (a *OrderRepositoryAdapter) UpdateStatus(ctx context.Context, number string
 		return a.repo.UpdateStatus(ctx, number, status, accrual)
 	})
 }
-

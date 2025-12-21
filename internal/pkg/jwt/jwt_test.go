@@ -81,4 +81,3 @@ func TestManager_ParseToken_WrongSecret(t *testing.T) {
 	_, err = manager2.ParseToken(token)
 	assert.Error(t, err)
 }
-

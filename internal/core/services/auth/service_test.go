@@ -145,4 +145,3 @@ func TestService_Login_WrongPassword(t *testing.T) {
 
 	assert.ErrorIs(t, err, domain.ErrInvalidCredentials)
 }
-

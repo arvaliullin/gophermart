@@ -44,4 +44,3 @@ func (h *WithdrawalHandler) List(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(dto.FromDomainWithdrawals(withdrawals))
 }
-

@@ -53,4 +53,3 @@ func Logging(logger zerolog.Logger) func(http.Handler) http.Handler {
 		})
 	}
 }
-

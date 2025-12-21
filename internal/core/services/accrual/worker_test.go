@@ -212,4 +212,3 @@ func TestRetryAfterError_Error(t *testing.T) {
 	err := &accrual.RetryAfterError{Duration: 60 * time.Second}
 	assert.Equal(t, "превышен лимит запросов, повторить через 1m0s", err.Error())
 }
-

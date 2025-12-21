@@ -12,9 +12,9 @@ import (
 
 // Service реализует бизнес-логику аутентификации пользователей.
 type Service struct {
-	userRepo   ports.UserRepository
+	userRepo    ports.UserRepository
 	balanceRepo ports.BalanceRepository
-	jwtManager *jwt.Manager
+	jwtManager  *jwt.Manager
 }
 
 // NewService создаёт новый сервис аутентификации.
@@ -61,4 +61,3 @@ func (s *Service) Login(ctx context.Context, login, password string) (string, er
 
 	return s.jwtManager.GenerateToken(user.ID)
 }
-
