@@ -1,18 +1,23 @@
-FROM golang:1.25.5-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
-WORKDIR /src
+WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
 
-RUN go build -v -o /usr/local/bin/gophermart github.com/arvaliullin/gophermart/cmd/gophermart
+RUN CGO_ENABLED=0 GOOS=linux go build -o /gophermart github.com/arvaliullin/gophermart/cmd/gophermart
 
-FROM alpine:latest
+FROM alpine:3.19
+
+RUN apk --no-cache add ca-certificates tzdata
 
 WORKDIR /app
 
-COPY --from=builder /usr/local/bin/gophermart /usr/local/bin/gophermart
+COPY --from=builder /gophermart .
+COPY --from=builder /app/migrations ./migrations
 
-CMD ["gophermart"]
+EXPOSE 8080
+
+CMD ["./gophermart"]
