@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	httpapi "github.com/arvaliullin/gophermart/internal/api/http"
 	"github.com/arvaliullin/gophermart/internal/api/http/client/accrual"
@@ -18,6 +19,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/pkg/retry"
 	"github.com/arvaliullin/gophermart/internal/repository/postgres"
 	retryadapter "github.com/arvaliullin/gophermart/internal/repository/retry"
+	"github.com/go-resty/resty/v2"
 	"github.com/rs/zerolog"
 )
 
@@ -104,7 +106,10 @@ func New(ctx context.Context) (*App, error) {
 	orderService := order.NewService(orderRepo)
 	balanceService := balance.NewService(balanceRepo, withdrawalRepo)
 
-	accrualClient := accrual.NewClient(cfg.AccrualSystemAddress)
+	httpClient := resty.New().
+		SetTimeout(10 * time.Second).
+		SetRetryCount(0)
+	accrualClient := accrual.NewClient(cfg.AccrualSystemAddress, accrual.WithHTTPClient(httpClient))
 	worker := accrualworker.NewWorker(orderRepo, balanceRepo, accrualClient, logger)
 
 	authHandler := handlers.NewAuthHandler(authService)
