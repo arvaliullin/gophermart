@@ -9,6 +9,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/api/http/middleware"
 	"github.com/arvaliullin/gophermart/internal/core/domain"
 	"github.com/arvaliullin/gophermart/internal/core/ports"
+	"github.com/shopspring/decimal"
 )
 
 // BalanceHandler обрабатывает HTTP запросы управления балансом.
@@ -61,7 +62,7 @@ func (h *BalanceHandler) Withdraw(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.balanceService.Withdraw(r.Context(), userID, req.Order, req.GetSumAsDecimal())
+	err := h.balanceService.Withdraw(r.Context(), userID, req.Order, decimal.NewFromFloat(req.Sum))
 	if err != nil {
 		if errors.Is(err, domain.ErrInvalidOrderNumber) {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)

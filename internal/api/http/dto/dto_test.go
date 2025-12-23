@@ -79,12 +79,6 @@ func TestWithdrawRequest_IsValid(t *testing.T) {
 	}
 }
 
-func TestWithdrawRequest_GetSumAsDecimal(t *testing.T) {
-	req := WithdrawRequest{Order: "123", Sum: 100.5}
-	dec := req.GetSumAsDecimal()
-	assert.True(t, decimal.NewFromFloat(100.5).Equal(dec))
-}
-
 func TestFromDomainBalance(t *testing.T) {
 	balance := &domain.Balance{
 		UserID:    1,
