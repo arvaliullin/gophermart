@@ -7,8 +7,8 @@ import (
 	"fmt"
 
 	_ "github.com/arvaliullin/gophermart/migrations"
-	shopspring "github.com/jackc/pgx-shopspring-decimal"
 	"github.com/jackc/pgerrcode"
+	shopspring "github.com/jackc/pgx-shopspring-decimal"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"

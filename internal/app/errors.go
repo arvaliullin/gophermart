@@ -19,4 +19,3 @@ const (
 	msgServerStopError    = "ошибка остановки HTTP сервера"
 	msgDBConnectionClosed = "соединение с БД закрыто"
 )
-
