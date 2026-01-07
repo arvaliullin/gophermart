@@ -15,7 +15,8 @@ import (
 func TestUserRepository_Create(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	repo := postgres.NewUserRepository(testPool)
+	client := newTestClient()
+	repo := postgres.NewUserRepository(client)
 
 	t.Run("успешное создание пользователя", func(t *testing.T) {
 		user, err := repo.Create(ctx, "testuser", "hashedpassword")
@@ -38,7 +39,8 @@ func TestUserRepository_Create(t *testing.T) {
 func TestUserRepository_GetByLogin(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	repo := postgres.NewUserRepository(testPool)
+	client := newTestClient()
+	repo := postgres.NewUserRepository(client)
 
 	t.Run("успешное получение пользователя по логину", func(t *testing.T) {
 		created, err := repo.Create(ctx, "findme", "password")
@@ -60,7 +62,8 @@ func TestUserRepository_GetByLogin(t *testing.T) {
 func TestUserRepository_GetByID(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	repo := postgres.NewUserRepository(testPool)
+	client := newTestClient()
+	repo := postgres.NewUserRepository(client)
 
 	t.Run("успешное получение пользователя по ID", func(t *testing.T) {
 		created, err := repo.Create(ctx, "byid", "password")

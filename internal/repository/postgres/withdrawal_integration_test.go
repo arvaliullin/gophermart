@@ -15,9 +15,10 @@ import (
 func TestWithdrawalRepository_GetByUserID(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	userRepo := postgres.NewUserRepository(testPool)
-	balanceRepo := postgres.NewBalanceRepository(testPool)
-	withdrawalRepo := postgres.NewWithdrawalRepository(testPool)
+	client := newTestClient()
+	userRepo := postgres.NewUserRepository(client)
+	balanceRepo := postgres.NewBalanceRepository(client)
+	withdrawalRepo := postgres.NewWithdrawalRepository(client)
 
 	user, err := userRepo.Create(ctx, "withdrawaluser", "password")
 	require.NoError(t, err)

@@ -5,19 +5,18 @@ import (
 	"errors"
 
 	"github.com/arvaliullin/gophermart/internal/core/domain"
+	"github.com/arvaliullin/gophermart/internal/core/ports"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/shopspring/decimal"
 )
 
-// BalanceRepository реализует интерфейс ports.BalanceRepository для PostgreSQL.
 type BalanceRepository struct {
-	pool *pgxpool.Pool
+	client ports.PostgresClient
 }
 
 // NewBalanceRepository создаёт новый репозиторий баланса.
-func NewBalanceRepository(pool *pgxpool.Pool) *BalanceRepository {
-	return &BalanceRepository{pool: pool}
+func NewBalanceRepository(client ports.PostgresClient) *BalanceRepository {
+	return &BalanceRepository{client: client}
 }
 
 // GetByUserID возвращает баланс пользователя.
@@ -29,7 +28,7 @@ func (r *BalanceRepository) GetByUserID(ctx context.Context, userID int64) (*dom
 	`
 
 	var balance domain.Balance
-	err := r.pool.QueryRow(ctx, query, userID).Scan(
+	err := r.client.QueryRow(ctx, query, userID).Scan(
 		&balance.UserID,
 		&balance.Current,
 		&balance.Withdrawn,
@@ -53,7 +52,7 @@ func (r *BalanceRepository) CreateForUser(ctx context.Context, userID int64) err
 		ON CONFLICT (user_id) DO NOTHING
 	`
 
-	_, err := r.pool.Exec(ctx, query, userID)
+	_, err := r.client.Exec(ctx, query, userID)
 	return err
 }
 
@@ -66,13 +65,13 @@ func (r *BalanceRepository) AddAccrual(ctx context.Context, userID int64, amount
 		SET current = balances.current + EXCLUDED.current
 	`
 
-	_, err := r.pool.Exec(ctx, query, userID, amount)
+	_, err := r.client.Exec(ctx, query, userID, amount)
 	return err
 }
 
 // Withdraw выполняет списание средств с баланса пользователя.
 func (r *BalanceRepository) Withdraw(ctx context.Context, userID int64, orderNumber string, amount decimal.Decimal) error {
-	tx, err := r.pool.Begin(ctx)
+	tx, err := r.client.Begin(ctx)
 	if err != nil {
 		return err
 	}

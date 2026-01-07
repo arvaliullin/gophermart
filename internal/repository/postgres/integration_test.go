@@ -8,7 +8,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/arvaliullin/gophermart/internal/pkg/retry"
 	"github.com/arvaliullin/gophermart/internal/repository/postgres/testhelpers"
+	retryclient "github.com/arvaliullin/gophermart/internal/repository/retry"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -48,4 +50,9 @@ func setupTest(t *testing.T) {
 	if err := testContainer.CleanupTables(ctx); err != nil {
 		t.Fatalf("не удалось очистить таблицы: %v", err)
 	}
+}
+
+// newTestClient создаёт клиент PostgreSQL для тестов без retry стратегии.
+func newTestClient() *retryclient.PostgresRetryClient {
+	return retryclient.NewPostgresRetryClient(testPool, retry.NewStrategy(nil, func(err error) bool { return false }))
 }

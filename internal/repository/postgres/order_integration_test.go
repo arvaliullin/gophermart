@@ -16,8 +16,9 @@ import (
 func TestOrderRepository_Create(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	userRepo := postgres.NewUserRepository(testPool)
-	orderRepo := postgres.NewOrderRepository(testPool)
+	client := newTestClient()
+	userRepo := postgres.NewUserRepository(client)
+	orderRepo := postgres.NewOrderRepository(client)
 
 	user, err := userRepo.Create(ctx, "orderuser", "password")
 	require.NoError(t, err)
@@ -45,8 +46,9 @@ func TestOrderRepository_Create(t *testing.T) {
 func TestOrderRepository_GetByNumber(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	userRepo := postgres.NewUserRepository(testPool)
-	orderRepo := postgres.NewOrderRepository(testPool)
+	client := newTestClient()
+	userRepo := postgres.NewUserRepository(client)
+	orderRepo := postgres.NewOrderRepository(client)
 
 	user, err := userRepo.Create(ctx, "getbynum", "password")
 	require.NoError(t, err)
@@ -70,8 +72,9 @@ func TestOrderRepository_GetByNumber(t *testing.T) {
 func TestOrderRepository_GetByUserID(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	userRepo := postgres.NewUserRepository(testPool)
-	orderRepo := postgres.NewOrderRepository(testPool)
+	client := newTestClient()
+	userRepo := postgres.NewUserRepository(client)
+	orderRepo := postgres.NewOrderRepository(client)
 
 	user, err := userRepo.Create(ctx, "getbyuser", "password")
 	require.NoError(t, err)
@@ -102,8 +105,9 @@ func TestOrderRepository_GetByUserID(t *testing.T) {
 func TestOrderRepository_GetPendingOrders(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	userRepo := postgres.NewUserRepository(testPool)
-	orderRepo := postgres.NewOrderRepository(testPool)
+	client := newTestClient()
+	userRepo := postgres.NewUserRepository(client)
+	orderRepo := postgres.NewOrderRepository(client)
 
 	user, err := userRepo.Create(ctx, "pending", "password")
 	require.NoError(t, err)
@@ -128,8 +132,9 @@ func TestOrderRepository_GetPendingOrders(t *testing.T) {
 func TestOrderRepository_UpdateStatus(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	userRepo := postgres.NewUserRepository(testPool)
-	orderRepo := postgres.NewOrderRepository(testPool)
+	client := newTestClient()
+	userRepo := postgres.NewUserRepository(client)
+	orderRepo := postgres.NewOrderRepository(client)
 
 	user, err := userRepo.Create(ctx, "updatestat", "password")
 	require.NoError(t, err)
