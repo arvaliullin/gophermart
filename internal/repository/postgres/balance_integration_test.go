@@ -16,8 +16,9 @@ import (
 func TestBalanceRepository_GetByUserID(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	userRepo := postgres.NewUserRepository(testPool)
-	balanceRepo := postgres.NewBalanceRepository(testPool)
+	client := newTestClient()
+	userRepo := postgres.NewUserRepository(client)
+	balanceRepo := postgres.NewBalanceRepository(client)
 
 	user, err := userRepo.Create(ctx, "balanceuser", "password")
 	require.NoError(t, err)
@@ -44,8 +45,9 @@ func TestBalanceRepository_GetByUserID(t *testing.T) {
 func TestBalanceRepository_CreateForUser(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	userRepo := postgres.NewUserRepository(testPool)
-	balanceRepo := postgres.NewBalanceRepository(testPool)
+	client := newTestClient()
+	userRepo := postgres.NewUserRepository(client)
+	balanceRepo := postgres.NewBalanceRepository(client)
 
 	user, err := userRepo.Create(ctx, "createbal", "password")
 	require.NoError(t, err)
@@ -68,8 +70,9 @@ func TestBalanceRepository_CreateForUser(t *testing.T) {
 func TestBalanceRepository_AddAccrual(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	userRepo := postgres.NewUserRepository(testPool)
-	balanceRepo := postgres.NewBalanceRepository(testPool)
+	client := newTestClient()
+	userRepo := postgres.NewUserRepository(client)
+	balanceRepo := postgres.NewBalanceRepository(client)
 
 	user, err := userRepo.Create(ctx, "accrualuser", "password")
 	require.NoError(t, err)
@@ -96,8 +99,9 @@ func TestBalanceRepository_AddAccrual(t *testing.T) {
 func TestBalanceRepository_Withdraw(t *testing.T) {
 	setupTest(t)
 	ctx := context.Background()
-	userRepo := postgres.NewUserRepository(testPool)
-	balanceRepo := postgres.NewBalanceRepository(testPool)
+	client := newTestClient()
+	userRepo := postgres.NewUserRepository(client)
+	balanceRepo := postgres.NewBalanceRepository(client)
 
 	user, err := userRepo.Create(ctx, "withdrawuser", "password")
 	require.NoError(t, err)

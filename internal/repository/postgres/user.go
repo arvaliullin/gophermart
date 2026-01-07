@@ -5,20 +5,19 @@ import (
 	"errors"
 
 	"github.com/arvaliullin/gophermart/internal/core/domain"
+	"github.com/arvaliullin/gophermart/internal/core/ports"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// UserRepository реализует интерфейс ports.UserRepository для PostgreSQL.
 type UserRepository struct {
-	pool *pgxpool.Pool
+	client ports.PostgresClient
 }
 
 // NewUserRepository создаёт новый репозиторий пользователей.
-func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
-	return &UserRepository{pool: pool}
+func NewUserRepository(client ports.PostgresClient) *UserRepository {
+	return &UserRepository{client: client}
 }
 
 // Create создаёт нового пользователя и возвращает его.
@@ -30,7 +29,7 @@ func (r *UserRepository) Create(ctx context.Context, login, passwordHash string)
 	`
 
 	var user domain.User
-	err := r.pool.QueryRow(ctx, query, login, passwordHash).Scan(
+	err := r.client.QueryRow(ctx, query, login, passwordHash).Scan(
 		&user.ID,
 		&user.Login,
 		&user.Password,
@@ -57,7 +56,7 @@ func (r *UserRepository) GetByLogin(ctx context.Context, login string) (*domain.
 	`
 
 	var user domain.User
-	err := r.pool.QueryRow(ctx, query, login).Scan(
+	err := r.client.QueryRow(ctx, query, login).Scan(
 		&user.ID,
 		&user.Login,
 		&user.Password,
@@ -83,7 +82,7 @@ func (r *UserRepository) GetByID(ctx context.Context, id int64) (*domain.User, e
 	`
 
 	var user domain.User
-	err := r.pool.QueryRow(ctx, query, id).Scan(
+	err := r.client.QueryRow(ctx, query, id).Scan(
 		&user.ID,
 		&user.Login,
 		&user.Password,

@@ -4,17 +4,16 @@ import (
 	"context"
 
 	"github.com/arvaliullin/gophermart/internal/core/domain"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/arvaliullin/gophermart/internal/core/ports"
 )
 
-// WithdrawalRepository реализует интерфейс ports.WithdrawalRepository для PostgreSQL.
 type WithdrawalRepository struct {
-	pool *pgxpool.Pool
+	client ports.PostgresClient
 }
 
 // NewWithdrawalRepository создаёт новый репозиторий списаний.
-func NewWithdrawalRepository(pool *pgxpool.Pool) *WithdrawalRepository {
-	return &WithdrawalRepository{pool: pool}
+func NewWithdrawalRepository(client ports.PostgresClient) *WithdrawalRepository {
+	return &WithdrawalRepository{client: client}
 }
 
 // GetByUserID возвращает все списания пользователя, отсортированные по дате.
@@ -26,7 +25,7 @@ func (r *WithdrawalRepository) GetByUserID(ctx context.Context, userID int64) ([
 		ORDER BY processed_at DESC
 	`
 
-	rows, err := r.pool.Query(ctx, query, userID)
+	rows, err := r.client.Query(ctx, query, userID)
 	if err != nil {
 		return nil, err
 	}

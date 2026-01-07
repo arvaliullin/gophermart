@@ -5,21 +5,20 @@ import (
 	"errors"
 
 	"github.com/arvaliullin/gophermart/internal/core/domain"
+	"github.com/arvaliullin/gophermart/internal/core/ports"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/shopspring/decimal"
 )
 
-// OrderRepository реализует интерфейс ports.OrderRepository для PostgreSQL.
 type OrderRepository struct {
-	pool *pgxpool.Pool
+	client ports.PostgresClient
 }
 
 // NewOrderRepository создаёт новый репозиторий заказов.
-func NewOrderRepository(pool *pgxpool.Pool) *OrderRepository {
-	return &OrderRepository{pool: pool}
+func NewOrderRepository(client ports.PostgresClient) *OrderRepository {
+	return &OrderRepository{client: client}
 }
 
 // Create создаёт новый заказ.
@@ -31,7 +30,7 @@ func (r *OrderRepository) Create(ctx context.Context, userID int64, number strin
 	`
 
 	var order domain.Order
-	err := r.pool.QueryRow(ctx, query, userID, number, domain.OrderStatusNew).Scan(
+	err := r.client.QueryRow(ctx, query, userID, number, domain.OrderStatusNew).Scan(
 		&order.ID,
 		&order.UserID,
 		&order.Number,
@@ -60,7 +59,7 @@ func (r *OrderRepository) GetByNumber(ctx context.Context, number string) (*doma
 	`
 
 	var order domain.Order
-	err := r.pool.QueryRow(ctx, query, number).Scan(
+	err := r.client.QueryRow(ctx, query, number).Scan(
 		&order.ID,
 		&order.UserID,
 		&order.Number,
@@ -88,7 +87,7 @@ func (r *OrderRepository) GetByUserID(ctx context.Context, userID int64) ([]*dom
 		ORDER BY uploaded_at DESC
 	`
 
-	rows, err := r.pool.Query(ctx, query, userID)
+	rows, err := r.client.Query(ctx, query, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +122,7 @@ func (r *OrderRepository) GetPendingOrders(ctx context.Context) ([]*domain.Order
 		ORDER BY uploaded_at ASC
 	`
 
-	rows, err := r.pool.Query(ctx, query, domain.OrderStatusNew, domain.OrderStatusProcessing)
+	rows, err := r.client.Query(ctx, query, domain.OrderStatusNew, domain.OrderStatusProcessing)
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +156,7 @@ func (r *OrderRepository) UpdateStatus(ctx context.Context, number string, statu
 		WHERE number = $3
 	`
 
-	result, err := r.pool.Exec(ctx, query, status, accrual, number)
+	result, err := r.client.Exec(ctx, query, status, accrual, number)
 	if err != nil {
 		return err
 	}

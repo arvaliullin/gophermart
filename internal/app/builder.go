@@ -19,7 +19,7 @@ import (
 	"github.com/arvaliullin/gophermart/internal/pkg/jwt"
 	"github.com/arvaliullin/gophermart/internal/pkg/retry"
 	"github.com/arvaliullin/gophermart/internal/repository/postgres"
-	retryadapter "github.com/arvaliullin/gophermart/internal/repository/retry"
+	retryclient "github.com/arvaliullin/gophermart/internal/repository/retry"
 	"github.com/go-resty/resty/v2"
 	"github.com/rs/zerolog"
 )
@@ -100,33 +100,14 @@ func (b *Builder) WithInfrastructure() *Builder {
 	return b
 }
 
-// WithRepositories создаёт репозитории с retry адаптерами.
+// WithRepositories создаёт репозитории с retry клиентом.
 func (b *Builder) WithRepositories() *Builder {
-	var err error
+	retryClient := retryclient.NewPostgresRetryClient(b.db.Pool, b.retryStrategy)
 
-	b.userRepo, err = retryadapter.NewUserRepositoryAdapter(
-		postgres.NewUserRepository(b.db.Pool), b.retryStrategy)
-	if err != nil {
-		panic(fmt.Errorf("%w: %w", ErrCreateRetryRepo, err))
-	}
-
-	b.orderRepo, err = retryadapter.NewOrderRepositoryAdapter(
-		postgres.NewOrderRepository(b.db.Pool), b.retryStrategy)
-	if err != nil {
-		panic(fmt.Errorf("%w: %w", ErrCreateRetryRepo, err))
-	}
-
-	b.balanceRepo, err = retryadapter.NewBalanceRepositoryAdapter(
-		postgres.NewBalanceRepository(b.db.Pool), b.retryStrategy)
-	if err != nil {
-		panic(fmt.Errorf("%w: %w", ErrCreateRetryRepo, err))
-	}
-
-	b.withdrawalRepo, err = retryadapter.NewWithdrawalRepositoryAdapter(
-		postgres.NewWithdrawalRepository(b.db.Pool), b.retryStrategy)
-	if err != nil {
-		panic(fmt.Errorf("%w: %w", ErrCreateRetryRepo, err))
-	}
+	b.userRepo = postgres.NewUserRepository(retryClient)
+	b.orderRepo = postgres.NewOrderRepository(retryClient)
+	b.balanceRepo = postgres.NewBalanceRepository(retryClient)
+	b.withdrawalRepo = postgres.NewWithdrawalRepository(retryClient)
 
 	return b
 }
